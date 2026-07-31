@@ -1,17 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.delete-form').forEach(f => f.addEventListener('submit', e => {
-        e.preventDefault();
-        Swal.fire({
-            title: 'Excluir endereço?',
-            text: 'Esta ação não poderá ser desfeita.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Sim, excluir',
-            cancelButtonText: 'Cancelar'
-        }).then(r => {
-            if (r.isConfirmed) f.submit();
-        });
-    }));
+    // CEP mask and autocomplete for the standalone Form page (Edit/Create via page)
     const cep = document.querySelector('.cep-mask');
     const btnBuscar = document.getElementById('btn-buscar-cep');
     if (cep) {

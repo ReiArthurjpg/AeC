@@ -35,9 +35,7 @@
             </div>
         </nav>
         <main class="container py-4 main-content">
-            @if(TempData["Success"] is string msg){
-                <div class="alert alert-success border-0 shadow-sm rounded-3 d-flex align-items-center"><i data-lucide="check-circle" class="me-2 text-success"></i> @msg</div>
-            }
+
             @RenderBody()
         </main>
     </div>
@@ -47,6 +45,26 @@
     <script src="~/js/site.js"></script>
     <script>
       lucide.createIcons();
+      @if(TempData["Success"] is string successMsg)
+      {
+          <text>
+          const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', Swal.stopTimer)
+                  toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+          });
+          Toast.fire({
+              icon: 'success',
+              title: '@successMsg'
+          });
+          </text>
+      }
     </script>
     @await RenderSectionAsync("Scripts", false)
 </body>
