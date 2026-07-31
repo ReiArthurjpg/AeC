@@ -203,22 +203,29 @@ body.login-body {
   font-size: 0.88rem;
   font-weight: 600;
   text-decoration: none;
+  cursor: not-allowed !important;
+  opacity: 0.5;
+  pointer-events: all !important;
 }
 
 .link-forgot:hover {
-  text-decoration: underline;
-  color: #6fa8bf;
+  text-decoration: none;
+  cursor: not-allowed !important;
 }
 
-.link-orange {
-  color: #e05c00;
+.link-disabled {
+  color: #aec6d2;
   font-weight: 600;
   font-size: 0.88rem;
   text-decoration: none;
+  cursor: not-allowed !important;
+  opacity: 0.5;
+  pointer-events: all !important;
 }
 
-.link-orange:hover {
-  text-decoration: underline;
+.link-disabled:hover {
+  text-decoration: none;
+  cursor: not-allowed !important;
 }
 
 /* ── Botão Entrar ── */
@@ -282,13 +289,16 @@ body.login-body {
   font-size: 0.8rem;
   letter-spacing: 0.8px;
   padding: 0.55rem 0.5rem;
-  cursor: pointer;
+  cursor: not-allowed !important;
+  opacity: 0.5;
+  pointer-events: all !important;
   transition: background 0.15s, border-color 0.15s;
 }
 
 .btn-social:hover {
-  background: #f0f8fb;
-  border-color: #aec6d2;
+  background: #fff;
+  border-color: #d0d5dd;
+  cursor: not-allowed !important;
 }
 
 /* ── Rodapé ── */
@@ -319,13 +329,13 @@ body.login-body {
   letter-spacing: 0.5px;
   padding: 0.4rem 0.9rem;
   text-decoration: none;
+  cursor: not-allowed !important;
+  opacity: 0.5;
+  pointer-events: all !important;
   transition: background 0.2s;
 }
 
-.btn-whatsapp:hover {
-  background: #1ab553;
-  color: #fff;
-}
+.btn-whatsapp:hover { background: #25d366; color: #fff; cursor: not-allowed !important; }
 
 /* ── Alerta de erro ── */
 .alert-login-error {

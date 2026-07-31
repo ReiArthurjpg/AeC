@@ -4228,11 +4228,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\git\\AeC\\src\\AeC.Web\\AeC.Web.csproj",
+      "projectUniqueName": "C:\\git\\Aec\\src\\AeC.Web\\AeC.Web.csproj",
       "projectName": "AeC.Web",
-      "projectPath": "C:\\git\\AeC\\src\\AeC.Web\\AeC.Web.csproj",
+      "projectPath": "C:\\git\\Aec\\src\\AeC.Web\\AeC.Web.csproj",
       "packagesPath": "C:\\Users\\arthu\\.nuget\\packages\\",
-      "outputPath": "C:\\git\\AeC\\src\\AeC.Web\\obj\\",
+      "outputPath": "C:\\git\\Aec\\src\\AeC.Web\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\arthu\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -4247,14 +4247,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\git\\AeC\\src\\AeC.Application\\AeC.Application.csproj": {
-              "projectPath": "C:\\git\\AeC\\src\\AeC.Application\\AeC.Application.csproj"
+            "C:\\git\\Aec\\src\\AeC.Application\\AeC.Application.csproj": {
+              "projectPath": "C:\\git\\Aec\\src\\AeC.Application\\AeC.Application.csproj"
             },
-            "C:\\git\\AeC\\src\\AeC.Domain\\AeC.Domain.csproj": {
-              "projectPath": "C:\\git\\AeC\\src\\AeC.Domain\\AeC.Domain.csproj"
+            "C:\\git\\Aec\\src\\AeC.Domain\\AeC.Domain.csproj": {
+              "projectPath": "C:\\git\\Aec\\src\\AeC.Domain\\AeC.Domain.csproj"
             },
-            "C:\\git\\AeC\\src\\AeC.Infrastructure\\AeC.Infrastructure.csproj": {
-              "projectPath": "C:\\git\\AeC\\src\\AeC.Infrastructure\\AeC.Infrastructure.csproj"
+            "C:\\git\\Aec\\src\\AeC.Infrastructure\\AeC.Infrastructure.csproj": {
+              "projectPath": "C:\\git\\Aec\\src\\AeC.Infrastructure\\AeC.Infrastructure.csproj"
             }
           }
         }

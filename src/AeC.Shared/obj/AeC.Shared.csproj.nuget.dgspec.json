@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\git\\AeC\\src\\AeC.Shared\\AeC.Shared.csproj": {}
+    "C:\\git\\Aec\\src\\AeC.Shared\\AeC.Shared.csproj": {}
   },
   "projects": {
-    "C:\\git\\AeC\\src\\AeC.Shared\\AeC.Shared.csproj": {
+    "C:\\git\\Aec\\src\\AeC.Shared\\AeC.Shared.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\git\\AeC\\src\\AeC.Shared\\AeC.Shared.csproj",
+        "projectUniqueName": "C:\\git\\Aec\\src\\AeC.Shared\\AeC.Shared.csproj",
         "projectName": "AeC.Shared",
-        "projectPath": "C:\\git\\AeC\\src\\AeC.Shared\\AeC.Shared.csproj",
+        "projectPath": "C:\\git\\Aec\\src\\AeC.Shared\\AeC.Shared.csproj",
         "packagesPath": "C:\\Users\\arthu\\.nuget\\packages\\",
-        "outputPath": "C:\\git\\AeC\\src\\AeC.Shared\\obj\\",
+        "outputPath": "C:\\git\\Aec\\src\\AeC.Shared\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\arthu\\AppData\\Roaming\\NuGet\\NuGet.Config"
