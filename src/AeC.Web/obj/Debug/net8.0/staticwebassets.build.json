@@ -1,0 +1,58 @@
+{
+  "Version": 1,
+  "Hash": "BP4FpmyUrlsdWpMe2xA8AD4GfpK3Xs9VDaCfKDbEgbA=",
+  "Source": "AeC.Web",
+  "BasePath": "_content/AeC.Web",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "AeC.Web\\wwwroot",
+      "Source": "AeC.Web",
+      "ContentRoot": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\",
+      "BasePath": "_content/AeC.Web",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\css\\site.css",
+      "SourceId": "AeC.Web",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\",
+      "BasePath": "_content/AeC.Web",
+      "RelativePath": "css/site.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\site.css"
+    },
+    {
+      "Identity": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\js\\site.js",
+      "SourceId": "AeC.Web",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\",
+      "BasePath": "_content/AeC.Web",
+      "RelativePath": "js/site.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\site.js"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+C:\git\AeC\src\AeC.Shared\bin\Debug\net8.0\AeC.Shared.deps.json
+C:\git\AeC\src\AeC.Shared\bin\Debug\net8.0\AeC.Shared.dll
+C:\git\AeC\src\AeC.Shared\bin\Debug\net8.0\AeC.Shared.pdb
+C:\git\AeC\src\AeC.Shared\obj\Debug\net8.0\AeC.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\git\AeC\src\AeC.Shared\obj\Debug\net8.0\AeC.Shared.AssemblyInfoInputs.cache
+C:\git\AeC\src\AeC.Shared\obj\Debug\net8.0\AeC.Shared.AssemblyInfo.cs
+C:\git\AeC\src\AeC.Shared\obj\Debug\net8.0\AeC.Shared.csproj.CoreCompileInputs.cache
+C:\git\AeC\src\AeC.Shared\obj\Debug\net8.0\AeC.Shared.sourcelink.json
+C:\git\AeC\src\AeC.Shared\obj\Debug\net8.0\AeC.Shared.dll
+C:\git\AeC\src\AeC.Shared\obj\Debug\net8.0\refint\AeC.Shared.dll
+C:\git\AeC\src\AeC.Shared\obj\Debug\net8.0\AeC.Shared.pdb
+C:\git\AeC\src\AeC.Shared\obj\Debug\net8.0\ref\AeC.Shared.dll
