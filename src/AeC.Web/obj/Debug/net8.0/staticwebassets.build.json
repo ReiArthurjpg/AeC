@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "BP4FpmyUrlsdWpMe2xA8AD4GfpK3Xs9VDaCfKDbEgbA=",
+  "Hash": "IufeXE5xk4PR+2gK2VxTEht1xhNwkiktff+RCL5pRwA=",
   "Source": "AeC.Web",
   "BasePath": "_content/AeC.Web",
   "Mode": "Default",
@@ -16,6 +16,25 @@
     }
   ],
   "Assets": [
+    {
+      "Identity": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\css\\login.css",
+      "SourceId": "AeC.Web",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\",
+      "BasePath": "_content/AeC.Web",
+      "RelativePath": "css/login.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\login.css"
+    },
     {
       "Identity": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\css\\site.css",
       "SourceId": "AeC.Web",
