@@ -9,6 +9,10 @@
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
+      "Id": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\images\\bg-pattern.png",
+      "PackagePath": "staticwebassets\\images\\bg-pattern.png"
+    },
+    {
       "Id": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

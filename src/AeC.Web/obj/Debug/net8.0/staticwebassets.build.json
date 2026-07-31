@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "IufeXE5xk4PR+2gK2VxTEht1xhNwkiktff+RCL5pRwA=",
+  "Hash": "sEfmfgAeRS9D4vgpvVyew6ELVx/rUxWSGiOKiGy8HMA=",
   "Source": "AeC.Web",
   "BasePath": "_content/AeC.Web",
   "Mode": "Default",
@@ -53,6 +53,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\site.css"
+    },
+    {
+      "Identity": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\images\\bg-pattern.png",
+      "SourceId": "AeC.Web",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\",
+      "BasePath": "_content/AeC.Web",
+      "RelativePath": "images/bg-pattern.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\bg-pattern.png"
     },
     {
       "Identity": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\js\\site.js",

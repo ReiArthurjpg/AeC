@@ -1,23 +1,142 @@
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
+/* ── Base ── */
 body.login-body {
   font-family: 'Inter', sans-serif;
-  background: #f0f2f5;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* ══════════════════════════════════════
+   WRAPPER — ocupa 100% da tela
+   position:relative para os filhos absolute
+══════════════════════════════════════ */
+.login-wrapper {
+  position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 1rem;
+  padding: 2rem;
+
+  /* Gradiente azul full-screen */
+  background: linear-gradient(140deg,
+      #62d4ea 0%,
+      #aec6d2 30%,
+      #3b9dc8 60%,
+      #1a6aad 100%);
 }
 
-/* ── Card ── */
+/* Padrão geométrico — overlay sobre o gradiente */
+.login-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/images/bg-pattern.png') center / cover no-repeat;
+  opacity: 0.13;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ══════════════════════════════════════
+   LOGO — canto superior direito
+══════════════════════════════════════ */
+.login-logo {
+  position: absolute;
+  top: 1.75rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.login-logo__name {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -1.5px;
+  line-height: 1;
+}
+
+.login-logo__tagline {
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ══════════════════════════════════════
+   TEXTO DE BOAS-VINDAS — canto inferior esquerdo
+══════════════════════════════════════ */
+.login-welcome {
+  position: absolute;
+  bottom: 3rem;
+  left: 3rem;
+  z-index: 2;
+  max-width: 420px;
+  pointer-events: none;
+}
+
+.login-welcome__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 0.3rem 0.85rem;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+}
+
+.login-welcome__title {
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 0.6rem;
+  line-height: 1.15;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.login-welcome__sub {
+  font-size: 0.97rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.login-welcome__sub strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ══════════════════════════════════════
+   CARD — flutua à direita sobre o bg
+══════════════════════════════════════ */
 .login-card {
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10);
+  position: relative;
+  z-index: 5;
+  margin-left: auto;
+  /* empurra para a direita */
   width: 100%;
-  max-width: 360px;
-  padding: 2rem 1.75rem 1.5rem;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 2.5rem 2rem 2rem;
+  box-shadow:
+    0 8px 40px rgba(0, 50, 100, 0.25),
+    0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 /* ── Cabeçalho ── */
@@ -35,25 +154,26 @@ body.login-body {
   line-height: 1.4;
 }
 
-/* ── Inputs com floating label ── */
-.form-floating > .form-control {
+/* ── Inputs ── */
+.form-floating>.form-control {
   border-radius: 8px;
   border: 1.5px solid #d0d5dd;
   font-size: 0.95rem;
   padding-top: 1.2rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.form-floating > .form-control:focus {
-  border-color: #3a5bd9;
-  box-shadow: 0 0 0 3px rgba(58, 91, 217, 0.12);
+.form-floating>.form-control:focus {
+  border-color: #aec6d2;
+  box-shadow: 0 0 0 3px rgba(174, 198, 210, 0.30);
 }
 
-.form-floating > label {
+.form-floating>label {
   color: #9098a0;
   font-size: 0.88rem;
 }
 
-/* ── Ícone de mostrar senha ── */
+/* ── Toggle senha ── */
 .password-wrapper {
   position: relative;
 }
@@ -73,16 +193,33 @@ body.login-body {
   line-height: 1;
 }
 
-.btn-toggle-eye:focus { outline: none; }
+.btn-toggle-eye:focus {
+  outline: none;
+}
 
-/* ── Link esqueci senha ── */
+/* ── Links ── */
 .link-forgot {
-  color: #3a5bd9;
+  color: #aec6d2;
   font-size: 0.88rem;
   font-weight: 600;
   text-decoration: none;
 }
-.link-forgot:hover { text-decoration: underline; color: #2a44b0; }
+
+.link-forgot:hover {
+  text-decoration: underline;
+  color: #6fa8bf;
+}
+
+.link-orange {
+  color: #e05c00;
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+}
+
+.link-orange:hover {
+  text-decoration: underline;
+}
 
 /* ── Botão Entrar ── */
 .btn-entrar {
@@ -96,20 +233,15 @@ body.login-body {
   padding: 0.75rem;
   width: 100%;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
-.btn-entrar:hover { background: #c4cad6; color: #333; }
 
-/* ── Links laranjas ── */
-.link-orange {
-  color: #e05c00;
-  font-weight: 600;
-  font-size: 0.88rem;
-  text-decoration: none;
+.btn-entrar:hover {
+  background: #aec6d2;
+  color: #fff;
 }
-.link-orange:hover { text-decoration: underline; color: #c04e00; }
 
-/* ── Texto de cadastro ── */
+/* ── Textos de apoio ── */
 .text-link-row {
   font-size: 0.85rem;
   color: #555e6d;
@@ -126,7 +258,9 @@ body.login-body {
   font-size: 0.82rem;
   margin: 0.75rem 0;
 }
-.divider-or::before, .divider-or::after {
+
+.divider-or::before,
+.divider-or::after {
   content: '';
   flex: 1;
   height: 1px;
@@ -149,9 +283,13 @@ body.login-body {
   letter-spacing: 0.8px;
   padding: 0.55rem 0.5rem;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.15s;
 }
-.btn-social:hover { background: #f5f7fa; }
+
+.btn-social:hover {
+  background: #f0f8fb;
+  border-color: #aec6d2;
+}
 
 /* ── Rodapé ── */
 .login-footer {
@@ -183,7 +321,11 @@ body.login-body {
   text-decoration: none;
   transition: background 0.2s;
 }
-.btn-whatsapp:hover { background: #1ab553; color: #fff; }
+
+.btn-whatsapp:hover {
+  background: #1ab553;
+  color: #fff;
+}
 
 /* ── Alerta de erro ── */
 .alert-login-error {
@@ -197,4 +339,33 @@ body.login-body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+/* ══════════════════════════════
+   RESPONSIVO
+══════════════════════════════ */
+@media (max-width: 768px) {
+  .login-wrapper {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 1rem 10rem;
+  }
+
+  .login-card {
+    margin-left: 0;
+    max-width: 100%;
+  }
+
+  .login-welcome {
+    bottom: 1.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
+    max-width: 100%;
+  }
+
+  .login-logo {
+    top: 1rem;
+    right: 1rem;
+  }
 }
