@@ -54,13 +54,19 @@ body.login-body {
   align-items: center;
   gap: 0.5rem;
 }
-
 .login-logo__name {
-  font-size: 2.2rem;
+  font-size: 3.5rem;
   font-weight: 900;
-  color: #fff;
   letter-spacing: -1.5px;
   line-height: 1;
+}
+
+.logo-blue-dark {
+  color: #005596; /* Azul escuro corporativo exato */
+}
+
+.logo-blue-light {
+  color: #00b3e3; /* Azul claro / Ciano exato */
 }
 
 .login-logo__tagline {
