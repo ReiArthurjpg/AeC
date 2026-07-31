@@ -30,17 +30,17 @@
         <h1 class="login-title">Faça seu login</h1>
         <p class="login-subtitle">Insira seu usuário e senha abaixo para entrar na sua conta</p>
 
+        <!-- Informação do Usuário Padrão de forma discreta -->
+        <div class="alert alert-info py-2 px-3 mb-3 border-0" style="background-color: #f0f7fb; border-radius: 8px; font-size: 0.8rem; color: #3b88b0;">
+            <i class="bi bi-info-circle-fill me-1"></i>
+            Usuário padrão: <strong>admin</strong> | Senha: <strong>Admin@123</strong>
+        </div>
+
         <form asp-action="Login" method="post" novalidate>
             <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
             @Html.AntiForgeryToken()
 
-            @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
-            {
-                <div class="alert-login-error">
-                    <i class="bi bi-exclamation-circle-fill"></i>
-                    <span>Usuário ou senha inválidos.</span>
-                </div>
-            }
+            @* Mensagens de erro serão exibidas via Toastr *@
 
             <div class="form-floating mb-3">
                 <input asp-for="Usuario" class="form-control" placeholder="Usuário" id="Usuario" autofocus autocomplete="username" />
@@ -116,5 +116,20 @@
             icon.classList.replace('bi-eye-slash', 'bi-eye');
         }
     });
+
+    // Configuração do Toastr
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000"
+    };
+
+    // Dispara erro se a validação do Model falhar
+    @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+    {
+        @:toastr.error("Usuário ou senha inválidos.", "Falha no Login");
+    }
 </script>
 }
