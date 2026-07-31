@@ -2,7 +2,7 @@ using AeC.Application.DTOs; using AeC.Application.Interfaces; using AeC.Domain.E
 namespace AeC.Application.Services;
 public sealed class EnderecoService(IEnderecoRepository repo) : IEnderecoService
 {
-    public async Task<PagedResult<EnderecoDto>> ListarAsync(int usuarioId, EnderecoFilterDto f, CancellationToken ct = default){ var (items,total)=await repo.ListarAsync(usuarioId,f.Termo?.Clean(),f.OrdenarPor,f.Pagina<1?1:f.Pagina,f.TamanhoPagina<1?10:f.TamanhoPagina,ct); return new(items.Select(Map).ToList(),total,f.Pagina,f.TamanhoPagina); }
+    public async Task<PagedResult<EnderecoDto>> ListarAsync(int usuarioId, EnderecoFilterDto f, CancellationToken ct = default){ var (items,total)=await repo.ListarAsync(usuarioId,f.Termo?.Clean(),f.OrdenarPor,f.UF,f.Cidade,f.Pagina<1?1:f.Pagina,f.TamanhoPagina<1?10:f.TamanhoPagina,ct); return new(items.Select(Map).ToList(),total,f.Pagina,f.TamanhoPagina); }
     public async Task<IReadOnlyList<EnderecoDto>> ListarTodosAsync(int usuarioId, CancellationToken ct = default)=> (await repo.ListarTodosAsync(usuarioId,ct)).Select(Map).ToList();
     public async Task<EnderecoDto?> ObterAsync(int id,int usuarioId,CancellationToken ct=default)=> (await repo.ObterDoUsuarioAsync(id,usuarioId,ct)) is { } e ? Map(e) : null;
     public async Task<int> CriarAsync(int usuarioId, EnderecoFormDto dto, CancellationToken ct=default){ var e=From(dto,usuarioId); await repo.AdicionarAsync(e,ct); await repo.SalvarAsync(ct); return e.Id; }

@@ -12,7 +12,7 @@ public sealed class EnderecoFormDto
     [Required(ErrorMessage="A UF é obrigatória."), StringLength(2, MinimumLength=2, ErrorMessage="A UF deve ter 2 caracteres.")] public string UF { get; set; } = string.Empty;
     [Required(ErrorMessage="O Número é obrigatório."), MaxLength(20, ErrorMessage="Máximo de 20 caracteres.")] public string Numero { get; set; } = string.Empty;
 }
-public sealed record EnderecoFilterDto(string? Termo, string? OrdenarPor, int Pagina = 1, int TamanhoPagina = 10);
+public sealed record EnderecoFilterDto(string? Termo, string? OrdenarPor, string? UF = null, string? Cidade = null, int Pagina = 1, int TamanhoPagina = 10);
 public sealed record ViaCepAddressDto(string Cep,string Logradouro,string? Complemento,string Bairro,string Localidade,string Uf);
 public sealed record LoginDto(string Usuario,string Senha);
 public sealed record AuthenticatedUserDto(int Id,string Nome,string Usuario);

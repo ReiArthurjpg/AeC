@@ -33,96 +33,140 @@
 </div>
 
 <div class="card p-4 mb-4">
-    <div class="d-flex flex-column flex-lg-row justify-content-between gap-3">
-        <form class="flex-grow-1" method="get">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="position-relative">
-                        <i data-lucide="search" class="position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary" style="width:18px;height:18px;"></i>
-                        <input name="termo" value="@Model.Termo" class="form-control ps-5" placeholder="Pesquisar por CEP ou cidade..." aria-label="Pesquisar">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <select name="ordenarPor" class="form-select" aria-label="Ordenar">
-                        @if(Model.OrdenarPor == "cidade") {
-                            <option value="cidade" selected>Cidade A-Z</option>
-                            <option value="cidade_desc">Cidade Z-A</option>
-                        } else if(Model.OrdenarPor == "cidade_desc") {
-                            <option value="cidade">Cidade A-Z</option>
-                            <option value="cidade_desc" selected>Cidade Z-A</option>
-                        } else {
-                            <option value="cidade" selected>Cidade A-Z</option>
-                            <option value="cidade_desc">Cidade Z-A</option>
-                        }
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button class="btn btn-outline-primary w-100" type="submit">Buscar</button>
+    <form method="get">
+        <div class="row g-2 mb-2">
+            <div class="col-xl-8 col-lg-7 col-md-12">
+                <div class="position-relative">
+                    <i data-lucide="search" class="position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary" style="width:18px;height:18px;"></i>
+                    <input id="searchInput" name="termo" value="@Model.Termo" class="form-control ps-5" placeholder="Pesquisar por CEP, Rua ou Cidade..." aria-label="Pesquisar">
                 </div>
             </div>
-        </form>
-        <div class="d-flex gap-2">
-            <a class="btn btn-outline-secondary" asp-action="ExportCsv">
-                <i data-lucide="download"></i> Exportar
-            </a>
-            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalNovoEndereco">
-                <i data-lucide="plus"></i> Novo
-            </button>
+            <div class="col-xl-4 col-lg-5 col-md-12 d-flex justify-content-xl-end justify-content-start gap-2 align-items-center">
+                <!-- View Toggle Buttons -->
+                <div class="btn-group" role="group" aria-label="Modo de visualização">
+                    <button type="button" class="btn btn-outline-secondary active" id="btn-view-list" onclick="setViewMode('list')">
+                        <i data-lucide="list"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="btn-view-card" onclick="setViewMode('card')">
+                        <i data-lucide="layout-grid"></i>
+                    </button>
+                </div>
+                
+                <a class="btn btn-outline-secondary d-none d-sm-inline-flex align-items-center" asp-action="ExportCsv">
+                    <i data-lucide="download" class="me-1"></i> Exportar
+                </a>
+                <button class="btn btn-primary d-inline-flex align-items-center" type="button" data-bs-toggle="modal" data-bs-target="#modalNovoEndereco">
+                    <i data-lucide="plus" class="me-1"></i> Novo
+                </button>
+            </div>
         </div>
-    </div>
+        <div class="row g-2">
+            <div class="col-xl-3 col-lg-4 col-md-6">
+                <select name="uf" class="form-select" onchange="this.form.submit()">
+                    <option value="">UF (Todos)</option>
+                    @foreach(var uf in Model.UfsDisponiveis)
+                    {
+                        <option value="@uf" selected="@(Model.UF == uf)">@uf</option>
+                    }
+                </select>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6">
+                <select name="ordenarPor" class="form-select" aria-label="Ordenar" onchange="this.form.submit()">
+                    @if(Model.OrdenarPor == "cidade_desc") {
+                        <option value="cidade">Cidade A-Z</option>
+                        <option value="cidade_desc" selected>Cidade Z-A</option>
+                    } else {
+                        <option value="cidade" selected>Cidade A-Z</option>
+                        <option value="cidade_desc">Cidade Z-A</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </form>
 </div>
 
-<div class="card overflow-hidden">
+<div class="border-0 bg-transparent" id="container-enderecos">
     @if(Model.Enderecos.Items.Any()){
-        <div class="table-responsive">
-            <table class="table align-middle">
-                <thead>
-                    <tr>
-                        <th class="ps-4">CEP</th>
-                        <th>Logradouro</th>
-                        <th>Cidade/UF</th>
-                        <th>Número</th>
-                        <th class="text-end pe-4">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @foreach(var e in Model.Enderecos.Items){
-                    <tr>
-                        <td class="ps-4 fw-medium">@e.CEP</td>
-                        <td>@e.Logradouro</td>
-                        <td><span class="badge bg-light text-dark border">@e.Cidade / @e.UF</span></td>
-                        <td>@e.Numero</td>
-                        <td class="text-end pe-4">
-                            <div class="d-flex justify-content-end gap-1">
-                                <button class="btn-icon btn-ver-endereco" title="Visualizar" data-bs-toggle="tooltip" data-id="@e.Id">
-                                    <i data-lucide="eye"></i>
-                                </button>
-                                <button class="btn-icon btn-editar-endereco" title="Editar" data-bs-toggle="tooltip" data-id="@e.Id">
-                                    <i data-lucide="pencil"></i>
-                                </button>
-                                <form asp-action="Delete" asp-route-id="@e.Id" method="post" class="d-inline delete-form">
-                                    @Html.AntiForgeryToken()
-                                    <button type="button" class="btn-icon delete" title="Excluir">
-                                        <i data-lucide="trash-2"></i>
+        <div id="view-list" class="card overflow-hidden view-mode">
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">CEP</th>
+                            <th>Logradouro</th>
+                            <th>Cidade/UF</th>
+                            <th>Número</th>
+                            <th class="text-end pe-4">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach(var e in Model.Enderecos.Items){
+                        <tr>
+                            <td class="ps-4 fw-medium">@e.CEP</td>
+                            <td>@e.Logradouro</td>
+                            <td><span class="badge bg-light text-dark border">@e.Cidade / @e.UF</span></td>
+                            <td>@e.Numero</td>
+                            <td class="text-end pe-4">
+                                <div class="d-flex justify-content-end gap-1">
+                                    <button class="btn-icon btn-ver-endereco" title="Visualizar" data-bs-toggle="tooltip" data-id="@e.Id">
+                                        <i data-lucide="eye"></i>
                                     </button>
-                                </form>
+                                    <button class="btn-icon btn-editar-endereco" title="Editar" data-bs-toggle="tooltip" data-id="@e.Id">
+                                        <i data-lucide="pencil"></i>
+                                    </button>
+                                    <form asp-action="Delete" asp-route-id="@e.Id" method="post" class="d-inline delete-form">
+                                        @Html.AntiForgeryToken()
+                                        <button type="button" class="btn-icon delete" title="Excluir">
+                                            <i data-lucide="trash-2"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="view-card" class="view-mode d-none">
+            <div class="row g-3">
+                @foreach(var e in Model.Enderecos.Items){
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card h-100 shadow-sm border-0 address-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title fw-bold mb-0">@e.CEP</h5>
+                                    <span class="badge bg-light text-dark border">@e.UF</span>
+                                </div>
+                                <p class="card-text text-muted mb-1 text-truncate" title="@e.Logradouro, @e.Numero">@e.Logradouro, @e.Numero</p>
+                                <p class="card-text text-muted mb-3"><i data-lucide="map-pin" style="width:14px;height:14px;" class="me-1"></i>@e.Cidade</p>
+                                <div class="d-flex justify-content-end gap-1 border-top pt-3">
+                                    <button class="btn btn-outline-secondary btn-sm btn-ver-endereco" title="Visualizar" data-id="@e.Id"><i data-lucide="eye" style="width:16px;height:16px;"></i></button>
+                                    <button class="btn btn-outline-primary btn-sm btn-editar-endereco" title="Editar" data-id="@e.Id"><i data-lucide="pencil" style="width:16px;height:16px;"></i></button>
+                                    <form asp-action="Delete" asp-route-id="@e.Id" method="post" class="d-inline delete-form">
+                                        @Html.AntiForgeryToken()
+                                        <button type="button" class="btn btn-outline-danger btn-sm delete" title="Excluir"><i data-lucide="trash-2" style="width:16px;height:16px;"></i></button>
+                                    </form>
+                                </div>
                             </div>
-                        </td>
-                    </tr>
+                        </div>
+                    </div>
                 }
-                </tbody>
-            </table>
+            </div>
         </div>
     } else {
-        <div class="empty-state">
-            <div class="empty-state-icon">
-                <i data-lucide="map-pinned" style="width:40px;height:40px;"></i>
+        <div class="card overflow-hidden">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i data-lucide="map-pinned" style="width:40px;height:40px;"></i>
+                </div>
+                <h3 class="empty-state-title">Nenhum endereço encontrado</h3>
+                <p class="empty-state-desc">Você ainda não cadastrou nenhum endereço ou a sua busca não retornou resultados.</p>
+                <button class="btn btn-primary px-4" type="button" data-bs-toggle="modal" data-bs-target="#modalNovoEndereco">
+                    <i data-lucide="plus"></i> Novo Endereço
+                </button>
             </div>
-            <h3 class="empty-state-title">Nenhum endereço encontrado</h3>
-            <p class="empty-state-desc">Você ainda não cadastrou nenhum endereço ou a sua busca não retornou resultados.</p>
-            <button class="btn btn-primary px-4" type="button" data-bs-toggle="modal" data-bs-target="#modalNovoEndereco">
-                <i data-lucide="plus"></i> Novo Endereço
-            </button>
         </div>
     }
 </div>
@@ -599,5 +643,55 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+// ── View Mode Toggle ────────────────────────────────────────────────────
+function setViewMode(mode) {
+    const listBtn = document.getElementById('btn-view-list');
+    const cardBtn = document.getElementById('btn-view-card');
+    const listView = document.getElementById('view-list');
+    const cardView = document.getElementById('view-card');
+
+    if (!listBtn || !cardBtn || !listView || !cardView) return;
+
+    if (mode === 'card') {
+        listBtn.classList.remove('active');
+        cardBtn.classList.add('active');
+        listView.classList.add('d-none');
+        cardView.classList.remove('d-none');
+    } else {
+        cardBtn.classList.remove('active');
+        listBtn.classList.add('active');
+        cardView.classList.add('d-none');
+        listView.classList.remove('d-none');
+    }
+    localStorage.setItem('aec_address_view_mode', mode);
+}
+
+// Initialize view mode on load
+(function() {
+    const savedMode = localStorage.getItem('aec_address_view_mode') || 'list';
+    document.addEventListener('DOMContentLoaded', () => {
+        setViewMode(savedMode);
+        
+        // Setup Search Debounce
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            // Restore focus to end of text after reload
+            if (searchInput.value) {
+                searchInput.focus();
+                const len = searchInput.value.length;
+                searchInput.setSelectionRange(len, len);
+            }
+            
+            let debounceTimer;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    this.form.submit();
+                }, 500);
+            });
+        }
+    });
+})();
 </script>
 }
