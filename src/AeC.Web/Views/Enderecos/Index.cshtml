@@ -497,7 +497,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function successAndReload(modalEl, message) {
         bootstrap.Modal.getInstance(modalEl).hide();
-        Swal.fire({ icon: 'success', title: message, timer: 2000, showConfirmButton: false })
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        Toast.fire({ icon: 'success', title: message })
             .then(() => window.location.reload());
     }
 
