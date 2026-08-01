@@ -1,0 +1,163 @@
+@model RegisterViewModel
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Criar Conta";
+}
+
+<div class="login-wrapper register-wrapper-inverted">
+
+    @* Logo — canto superior esquerdo *@
+    <div class="login-logo">
+        <span class="login-logo__name"><span class="logo-blue-dark">a</span><span class="logo-blue-light">e</span><span class="logo-blue-dark">c</span></span>
+        <div class="login-logo__tagline">Relacionamento com<br/>Responsabilidade</div>
+    </div>
+
+    @* Texto de boas-vindas — canto inferior esquerdo *@
+    <div class="login-welcome">
+        <div class="login-welcome__badge">
+            <i class="bi bi-person-plus-fill"></i> Novo Cadastro
+        </div>
+        <h2 class="login-welcome__title">Crie sua conta<br/>e comece agora!</h2>
+        <p class="login-welcome__sub">
+            Cadastre-se gratuitamente e <strong>gerencie seus endereços</strong> de forma simples e rápida.
+        </p>
+    </div>
+
+    @* Card branco à direita *@
+    <div class="login-card">
+
+        <h1 class="login-title">Criar conta</h1>
+        <p class="login-subtitle">Preencha os campos abaixo para se cadastrar no sistema</p>
+
+        <form asp-action="Register" method="post" novalidate id="registerForm">
+            @Html.AntiForgeryToken()
+
+            <div class="form-floating mb-3">
+                <input asp-for="Nome" class="form-control" placeholder="Nome completo" id="Nome" autofocus autocomplete="name" />
+                <label for="Nome">Nome completo</label>
+                <span asp-validation-for="Nome" class="text-danger" style="font-size:0.8rem"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Usuario" class="form-control" placeholder="Usuário" id="Usuario" autocomplete="username" />
+                <label for="Usuario">Usuário</label>
+                <span asp-validation-for="Usuario" class="text-danger" style="font-size:0.8rem"></span>
+            </div>
+
+            <div class="form-floating mb-3 password-wrapper">
+                <input asp-for="Senha" class="form-control pe-5" placeholder="Senha" id="Senha" autocomplete="new-password" />
+                <label for="Senha">Senha <span class="text-danger ms-1">*</span></label>
+                <button type="button" class="btn-toggle-eye" id="toggleSenha" aria-label="Mostrar/ocultar senha">
+                    <i class="bi bi-eye" id="eyeIconSenha"></i>
+                </button>
+                <span asp-validation-for="Senha" class="text-danger" style="font-size:0.8rem"></span>
+            </div>
+
+            <div class="form-floating mb-3 password-wrapper">
+                <input asp-for="ConfirmarSenha" class="form-control pe-5" placeholder="Confirmar senha" id="ConfirmarSenha" autocomplete="new-password" />
+                <label for="ConfirmarSenha">Confirmar senha <span class="text-danger ms-1">*</span></label>
+                <button type="button" class="btn-toggle-eye" id="toggleConfirmar" aria-label="Mostrar/ocultar confirmação">
+                    <i class="bi bi-eye" id="eyeIconConfirmar"></i>
+                </button>
+                <span asp-validation-for="ConfirmarSenha" class="text-danger" style="font-size:0.8rem"></span>
+            </div>
+
+            @* Indicador de força da senha *@
+            <div class="mb-3">
+                <div class="d-flex gap-1" id="strengthBars">
+                    <div class="strength-bar" id="bar1"></div>
+                    <div class="strength-bar" id="bar2"></div>
+                    <div class="strength-bar" id="bar3"></div>
+                    <div class="strength-bar" id="bar4"></div>
+                </div>
+                <small id="strengthLabel" class="text-muted" style="font-size:0.78rem"></small>
+            </div>
+
+            <button type="submit" class="btn-entrar mb-3" id="btnCriar">CRIAR CONTA</button>
+        </form>
+
+        <p class="text-link-row">
+            Já possui cadastro? <a asp-action="Login" asp-controller="Account" class="fw-semibold" style="color:#3b9dc8; text-decoration:none;">Faça o login aqui.</a>
+        </p>
+
+        <div class="login-footer">
+            <span class="login-version">Versão 1.1.0</span>
+            <a href="https://wa.me/" target="_blank" class="btn-whatsapp">
+                <i class="bi bi-whatsapp"></i> FALE CONOSCO
+            </a>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+<style>
+  .strength-bar {
+    height: 4px;
+    flex: 1;
+    border-radius: 2px;
+    background: #e4e7ec;
+    transition: background 0.3s;
+  }
+</style>
+<script>
+    // Toggle olhinho — Senha
+    document.getElementById('toggleSenha').addEventListener('click', function () {
+        const input = document.getElementById('Senha');
+        const icon  = document.getElementById('eyeIconSenha');
+        input.type = input.type === 'password' ? 'text' : 'password';
+        icon.classList.toggle('bi-eye');
+        icon.classList.toggle('bi-eye-slash');
+    });
+
+    // Toggle olhinho — Confirmar Senha
+    document.getElementById('toggleConfirmar').addEventListener('click', function () {
+        const input = document.getElementById('ConfirmarSenha');
+        const icon  = document.getElementById('eyeIconConfirmar');
+        input.type = input.type === 'password' ? 'text' : 'password';
+        icon.classList.toggle('bi-eye');
+        icon.classList.toggle('bi-eye-slash');
+    });
+
+    // Indicador de força da senha
+    const senhaInput = document.getElementById('Senha');
+    const bars = [document.getElementById('bar1'), document.getElementById('bar2'),
+                  document.getElementById('bar3'), document.getElementById('bar4')];
+    const label = document.getElementById('strengthLabel');
+    const colors = ['#e74c3c','#e67e22','#f1c40f','#27ae60'];
+    const labels = ['Muito fraca','Fraca','Média','Forte'];
+
+    senhaInput.addEventListener('input', function () {
+        const v = this.value;
+        let score = 0;
+        if (v.length >= 6)  score++;
+        if (v.length >= 10) score++;
+        if (/[A-Z]/.test(v) && /[a-z]/.test(v)) score++;
+        if (/[\d\W]/.test(v)) score++;
+
+        bars.forEach((b, i) => {
+            b.style.background = i < score ? colors[score - 1] : '#e4e7ec';
+        });
+        label.textContent = v.length > 0 ? labels[score - 1] || '' : '';
+        label.style.color = score > 0 ? colors[score - 1] : '#9098a0';
+    });
+
+    // Configuração do Toastr
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000"
+    };
+
+    // Exibe erros de validação do servidor via Toastr
+    @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+    {
+        foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            @:toastr.error(@Html.Raw(Json.Serialize(error.ErrorMessage)), "Erro no Cadastro");
+        }
+    }
+</script>
+}

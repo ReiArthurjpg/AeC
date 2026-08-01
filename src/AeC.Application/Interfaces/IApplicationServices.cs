@@ -1,6 +1,6 @@
 using AeC.Application.DTOs; using AeC.Shared.Results;
 namespace AeC.Application.Interfaces;
-public interface IAuthService { Task<AuthenticatedUserDto?> AutenticarAsync(LoginDto dto, CancellationToken ct = default); }
+public interface IAuthService { Task<AuthenticatedUserDto?> AutenticarAsync(LoginDto dto, CancellationToken ct = default); Task<CadastroResultDto> CadastrarAsync(CadastroDto dto, CancellationToken ct = default); }
 public interface IEnderecoService
 {
     Task<PagedResult<EnderecoDto>> ListarAsync(int usuarioId, EnderecoFilterDto filtro, CancellationToken ct = default);
