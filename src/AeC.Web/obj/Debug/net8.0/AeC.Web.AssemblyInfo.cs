@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AeC.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c508ae75f489a813a65e2a041f1872048ef9bf8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3f1a65cc1a1b0cf9d0e81a45385f34f154a34622")]
 [assembly: System.Reflection.AssemblyProductAttribute("AeC.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AeC.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
