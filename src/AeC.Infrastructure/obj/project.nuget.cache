@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "dNdCqCxJHEc=",
+  "dgSpecHash": "lNuG/1jfn9E=",
   "success": true,
-  "projectFilePath": "C:\\git\\Aec\\src\\AeC.Infrastructure\\AeC.Infrastructure.csproj",
+  "projectFilePath": "C:\\git\\AeC\\src\\AeC.Infrastructure\\AeC.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\arthu\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\arthu\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",

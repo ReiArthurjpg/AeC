@@ -62,7 +62,7 @@
         </div>
         <div class="row g-2">
             <div class="col-xl-3 col-lg-4 col-md-6">
-                <select name="uf" class="form-select" onchange="this.form.submit()">
+                <select name="uf" class="form-select" onchange="skipNextPreloader(); this.form.submit()">
                     <option value="">UF (Todos)</option>
                     @foreach(var uf in Model.UfsDisponiveis)
                     {
@@ -71,7 +71,7 @@
                 </select>
             </div>
             <div class="col-xl-3 col-lg-4 col-md-6">
-                <select name="ordenarPor" class="form-select" aria-label="Ordenar" onchange="this.form.submit()">
+                <select name="ordenarPor" class="form-select" aria-label="Ordenar" onchange="skipNextPreloader(); this.form.submit()">
                     @if(Model.OrdenarPor == "cidade_desc") {
                         <option value="cidade">Cidade A-Z</option>
                         <option value="cidade_desc" selected>Cidade Z-A</option>
@@ -497,7 +497,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function successAndReload(modalEl, message) {
         bootstrap.Modal.getInstance(modalEl).hide();
-        Swal.fire({ icon: 'success', title: message, timer: 2000, showConfirmButton: false })
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        Toast.fire({ icon: 'success', title: message })
             .then(() => window.location.reload());
     }
 
@@ -684,7 +695,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }).then(result => {
                 if (result.isConfirmed) {
-                    form.submit();
+                    skipNextPreloader(); form.submit();
                 }
             });
         });
@@ -743,10 +754,15 @@ function setViewMode(mode) {
             searchInput.addEventListener('input', function() {
                 clearTimeout(debounceTimer);
                 debounceTimer = setTimeout(() => {
-                    this.form.submit();
+                    skipNextPreloader(); this.form.submit();
                 }, 500);
             });
         }
+
+        // Paginação: suprimir preloader ao navegar entre páginas
+        document.querySelectorAll('.pagination a, [data-pager]').forEach(function(a) {
+            a.addEventListener('click', function() { skipNextPreloader(); });
+        });
     });
 })();
 </script>

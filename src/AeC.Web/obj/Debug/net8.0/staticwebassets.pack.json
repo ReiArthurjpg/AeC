@@ -1,19 +1,19 @@
 {
   "Files": [
     {
-      "Id": "C:\\git\\Aec\\src\\AeC.Web\\wwwroot\\css\\login.css",
+      "Id": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\css\\login.css",
       "PackagePath": "staticwebassets\\css\\login.css"
     },
     {
-      "Id": "C:\\git\\Aec\\src\\AeC.Web\\wwwroot\\css\\site.css",
+      "Id": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
-      "Id": "C:\\git\\Aec\\src\\AeC.Web\\wwwroot\\images\\bg-pattern.png",
+      "Id": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\images\\bg-pattern.png",
       "PackagePath": "staticwebassets\\images\\bg-pattern.png"
     },
     {
-      "Id": "C:\\git\\Aec\\src\\AeC.Web\\wwwroot\\js\\site.js",
+      "Id": "C:\\git\\AeC\\src\\AeC.Web\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },
     {

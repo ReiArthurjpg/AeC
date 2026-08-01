@@ -9,6 +9,39 @@
     <link href="~/css/site.css" rel="stylesheet"/>
 </head>
 <body>
+    <!-- ═══════════════ PRELOADER ═══════════════ -->
+    <script>
+      // Oculta o preloader imediatamente em navegações internas (busca, paginação, etc.)
+      if (sessionStorage.getItem('aec_skip_preloader') === '1') {
+        sessionStorage.removeItem('aec_skip_preloader');
+        document.addEventListener('DOMContentLoaded', function () {
+          var el = document.getElementById('preloader');
+          if (el) el.remove();
+        });
+      }
+      function skipNextPreloader() {
+        sessionStorage.setItem('aec_skip_preloader', '1');
+      }
+    </script>
+    <div id="preloader" role="status" aria-label="Carregando...">
+        <div class="preloader-headset-wrap">
+            <div class="preloader-wave"></div>
+            <div class="preloader-wave"></div>
+            <div class="preloader-wave"></div>
+            <svg class="preloader-headset-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/>
+                <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+            </svg>
+        </div>
+        <div class="preloader-logo" aria-hidden="true">
+            <span class="pl-a">a</span><span class="pl-e">e</span><span class="pl-c">c</span>
+        </div>
+        <p class="preloader-tagline">Conectando você...</p>
+        <div class="preloader-progress-track">
+            <div class="preloader-progress-fill"></div>
+        </div>
+    </div>
     <div class="app-wrapper">
         <nav class="navbar navbar-expand-lg navbar-dark bg-transparent py-3">
             <div class="container">
@@ -67,5 +100,21 @@
       }
     </script>
     @await RenderSectionAsync("Scripts", false)
+    <script>
+      (function () {
+        var MIN_MS = 600;
+        var start = Date.now();
+        window.addEventListener('load', function () {
+          var elapsed = Date.now() - start;
+          var delay = Math.max(0, MIN_MS - elapsed);
+          setTimeout(function () {
+            var el = document.getElementById('preloader');
+            if (!el) return;
+            el.classList.add('preloader-hidden');
+            setTimeout(function () { el.remove(); }, 420);
+          }, delay);
+        });
+      })();
+    </script>
 </body>
 </html>
