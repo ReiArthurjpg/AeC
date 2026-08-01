@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 namespace AeC.Application.DTOs;
-public sealed record EnderecoDto(int Id,string CEP,string Logradouro,string? Complemento,string Bairro,string Cidade,string UF,string Numero,int UsuarioId);
+public sealed record EnderecoDto(int Id,string CEP,string Logradouro,string? Complemento,string Bairro,string Cidade,string UF,string Numero,int UsuarioId, string CriadoPor, string? AtualizadoPor);
 public sealed class EnderecoFormDto
 {
     public int Id { get; set; }
@@ -16,3 +16,5 @@ public sealed record EnderecoFilterDto(string? Termo, string? OrdenarPor, string
 public sealed record ViaCepAddressDto(string Cep,string Logradouro,string? Complemento,string Bairro,string Localidade,string Uf);
 public sealed record LoginDto(string Usuario,string Senha);
 public sealed record AuthenticatedUserDto(int Id,string Nome,string Usuario);
+public sealed record CadastroDto(string Nome, string Usuario, string Senha);
+public sealed record CadastroResultDto(bool Sucesso, string? Erro);

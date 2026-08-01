@@ -404,3 +404,31 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
     right: 1rem;
   }
 }
+
+/* ── Layout Invertido para Cadastro ── */
+.register-wrapper-inverted .login-card {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.register-wrapper-inverted .login-welcome {
+  left: auto;
+  right: 3rem;
+  text-align: right;
+}
+
+.register-wrapper-inverted .login-logo {
+  left: auto;
+  right: 1.75rem;
+}
+
+@media (max-width: 768px) {
+  .register-wrapper-inverted .login-card {
+    margin-right: 0;
+  }
+  .register-wrapper-inverted .login-welcome {
+    left: 1.5rem;
+    right: 1.5rem;
+    text-align: left;
+  }
+}

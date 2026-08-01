@@ -1,6 +1,31 @@
-using AeC.Domain.Entities; using Microsoft.EntityFrameworkCore; using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using AeC.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
 namespace AeC.Infrastructure.Configurations;
-public sealed class EnderecoConfiguration : IEntityTypeConfiguration<Endereco>{ public void Configure(EntityTypeBuilder<Endereco> b){ b.ToTable("Enderecos"); b.HasKey(x=>x.Id); b.Property(x=>x.CEP).HasMaxLength(9).IsRequired(); b.Property(x=>x.Logradouro).HasMaxLength(200).IsRequired(); b.Property(x=>x.Complemento).HasMaxLength(200); b.Property(x=>x.Bairro).HasMaxLength(120).IsRequired(); b.Property(x=>x.Cidade).HasMaxLength(120).IsRequired(); b.Property(x=>x.UF).HasMaxLength(2).IsRequired(); b.Property(x=>x.Numero).HasMaxLength(20).IsRequired(); b.HasOne(x=>x.Usuario).WithMany(x=>x.Enderecos).HasForeignKey(x=>x.UsuarioId).OnDelete(DeleteBehavior.Cascade); b.HasIndex(x=>x.UsuarioId); b.HasIndex(x=>x.CEP); b.HasIndex(x=>x.Cidade); } }
 
+public sealed class EnderecoConfiguration : IEntityTypeConfiguration<Endereco>
+{
+    public void Configure(EntityTypeBuilder<Endereco> b)
+    {
+        b.ToTable("Enderecos");
+        b.HasKey(x => x.Id);
+        
+        b.Property(x => x.CEP).HasMaxLength(9).IsRequired();
+        b.Property(x => x.Logradouro).HasMaxLength(200).IsRequired();
+        b.Property(x => x.Complemento).HasMaxLength(200);
+        b.Property(x => x.Bairro).HasMaxLength(120).IsRequired();
+        b.Property(x => x.Cidade).HasMaxLength(120).IsRequired();
+        b.Property(x => x.UF).HasMaxLength(2).IsRequired();
+        b.Property(x => x.Numero).HasMaxLength(20).IsRequired();
+        
+        b.Property(x => x.CriadoPor).HasMaxLength(100).IsRequired();
+        b.Property(x => x.AtualizadoPor).HasMaxLength(100);
 
-
+        b.HasOne(x => x.Usuario).WithMany(x => x.Enderecos).HasForeignKey(x => x.UsuarioId).OnDelete(DeleteBehavior.Cascade);
+        
+        b.HasIndex(x => x.UsuarioId);
+        b.HasIndex(x => x.CEP);
+        b.HasIndex(x => x.Cidade);
+    }
+}
