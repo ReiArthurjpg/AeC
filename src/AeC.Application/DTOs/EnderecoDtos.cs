@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 namespace AeC.Application.DTOs;
-public sealed record EnderecoDto(int Id,string CEP,string Logradouro,string? Complemento,string Bairro,string Cidade,string UF,string Numero,int UsuarioId);
+public sealed record EnderecoDto(int Id,string CEP,string Logradouro,string? Complemento,string Bairro,string Cidade,string UF,string Numero,int UsuarioId, string CriadoPor, string? AtualizadoPor);
 public sealed class EnderecoFormDto
 {
     public int Id { get; set; }

@@ -580,24 +580,30 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                     <div class="col-md-5">
                         <p class="text-muted fw-semibold mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">Logradouro</p>
-                        <p class="fw-medium mb-0">${e.logradouro || '—'}</p>
+                        <p class="fw-medium mb-0">${e.logradouro || '—'}, ${e.numero || '—'}</p>
                     </div>
                     <div class="col-md-3">
-                        <p class="text-muted fw-semibold mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">Número</p>
-                        <p class="fw-medium mb-0">${e.numero || '—'}</p>
+                        <p class="text-muted fw-semibold mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">Bairro</p>
+                        <p class="fw-medium mb-0">${e.bairro || '—'}</p>
                     </div>
                     <div class="col-md-4">
                         <p class="text-muted fw-semibold mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">Complemento</p>
                         <p class="fw-medium mb-0">${e.complemento || '—'}</p>
                     </div>
                     <div class="col-md-4">
-                        <p class="text-muted fw-semibold mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">Bairro</p>
-                        <p class="fw-medium mb-0">${e.bairro || '—'}</p>
-                    </div>
-                    <div class="col-md-4">
                         <p class="text-muted fw-semibold mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">Cidade / UF</p>
                         <span class="badge fs-6 fw-semibold" style="background:rgba(98,212,234,.15);color:#1A6AAD;">${e.cidade || '—'} / ${e.uf || '—'}</span>
                     </div>
+                    <div class="col-md-4">
+                        <p class="text-muted fw-semibold mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">Criado por</p>
+                        <p class="fw-medium mb-0 text-muted">${e.criadoPor || '—'}</p>
+                    </div>
+                    ${e.atualizadoPor ? `
+                    <div class="col-md-4 mt-3">
+                        <p class="text-muted fw-semibold mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">Atualizado por</p>
+                        <p class="fw-medium mb-0 text-muted">${e.atualizadoPor}</p>
+                    </div>
+                    ` : ''}
                 </div>`;
             } catch {
                 body.innerHTML = '<p class="text-danger text-center">Não foi possível carregar os dados.</p>';

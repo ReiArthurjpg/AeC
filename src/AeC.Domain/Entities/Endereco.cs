@@ -11,4 +11,7 @@ public sealed class Endereco
     public string Numero { get; set; } = string.Empty;
     public int UsuarioId { get; set; }
     public Usuario? Usuario { get; set; }
+    
+    public string CriadoPor { get; set; } = "Legado";
+    public string? AtualizadoPor { get; set; }
 }
