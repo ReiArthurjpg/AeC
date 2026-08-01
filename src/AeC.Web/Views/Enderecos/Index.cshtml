@@ -1,2 +1,753 @@
 @model EnderecoListViewModel
-<div class="d-flex justify-content-between align-items-center mb-3"><div><h1 class="h3 mb-0">Dashboard de Endereços</h1><span class="text-muted">Gerencie seus endereços com segurança.</span></div><div><a class="btn btn-success" asp-action="ExportCsv"><i class="bi bi-filetype-csv"></i> Exportar CSV</a> <a class="btn btn-primary" asp-action="Create"><i class="bi bi-plus-circle"></i> Novo</a></div></div><form class="card card-body mb-3"><div class="row g-2"><div class="col-md-7"><input name="termo" value="@Model.Termo" class="form-control" placeholder="Pesquisar por CEP ou cidade"/></div><div class="col-md-3"><select name="ordenarPor" class="form-select"><option value="cidade">Cidade A-Z</option><option value="cidade_desc">Cidade Z-A</option></select></div><div class="col-md-2"><button class="btn btn-outline-primary w-100"><i class="bi bi-search"></i> Buscar</button></div></div></form><div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead class="table-light"><tr><th>CEP</th><th>Logradouro</th><th>Cidade/UF</th><th>Número</th><th class="text-end">Ações</th></tr></thead><tbody>@foreach(var e in Model.Enderecos.Items){<tr><td>@e.CEP</td><td>@e.Logradouro</td><td>@e.Cidade/@e.UF</td><td>@e.Numero</td><td class="text-end"><a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@e.Id"><i class="bi bi-eye"></i></a> <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@e.Id"><i class="bi bi-pencil"></i></a> <form asp-action="Delete" asp-route-id="@e.Id" method="post" class="d-inline delete-form">@Html.AntiForgeryToken()<button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form></td></tr>}@if(!Model.Enderecos.Items.Any()){<tr><td colspan="5" class="text-center text-muted py-4">Nenhum endereço encontrado.</td></tr>}</tbody></table></div></div>
+
+<div class="row mb-4 align-items-center">
+    <div class="col-lg-6 mb-3 mb-lg-0">
+        <h1 class="h3 fw-bold mb-1 text-dark">Olá, @(User.Identity?.Name ?? "Administrador") 👋</h1>
+        <p class="text-muted mb-0">Gerencie seus endereços de maneira rápida e segura.</p>
+    </div>
+    <div class="col-lg-6">
+        <div class="d-flex gap-3 justify-content-lg-end">
+            <div class="stat-card">
+                <div class="stat-icon"><i data-lucide="map-pin"></i></div>
+                <div class="stat-content">
+                    <h4>@Model.Enderecos.Total</h4>
+                    <p>Total de Endereços</p>
+                </div>
+            </div>
+            <div class="stat-card d-none d-sm-flex">
+                <div class="stat-icon"><i data-lucide="building-2"></i></div>
+                <div class="stat-content">
+                    <h4>@Model.TotalCidades</h4>
+                    <p>Cidades cadastradas</p>
+                </div>
+            </div>
+            <div class="stat-card d-none d-md-flex">
+                <div class="stat-icon"><i data-lucide="clock"></i></div>
+                <div class="stat-content">
+                    <h4>@DateTime.Now.ToString("HH:mm")</h4>
+                    <p>Última atualização</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card p-4 mb-4">
+    <form method="get">
+        <div class="row g-2 mb-2">
+            <div class="col-xl-8 col-lg-7 col-md-12">
+                <div class="position-relative">
+                    <i data-lucide="search" class="position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary" style="width:18px;height:18px;"></i>
+                    <input id="searchInput" name="termo" value="@Model.Termo" class="form-control ps-5" placeholder="Pesquisar por CEP, Rua ou Cidade..." aria-label="Pesquisar">
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-5 col-md-12 d-flex justify-content-xl-end justify-content-start gap-2 align-items-center">
+                <!-- View Toggle Buttons -->
+                <div class="btn-group" role="group" aria-label="Modo de visualização">
+                    <button type="button" class="btn btn-outline-secondary active" id="btn-view-list" onclick="setViewMode('list')">
+                        <i data-lucide="list"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="btn-view-card" onclick="setViewMode('card')">
+                        <i data-lucide="layout-grid"></i>
+                    </button>
+                </div>
+                
+                <a class="btn btn-outline-secondary d-none d-sm-inline-flex align-items-center" asp-action="ExportCsv">
+                    <i data-lucide="download" class="me-1"></i> Exportar
+                </a>
+                <button class="btn btn-primary d-inline-flex align-items-center" type="button" data-bs-toggle="modal" data-bs-target="#modalNovoEndereco">
+                    <i data-lucide="plus" class="me-1"></i> Novo
+                </button>
+            </div>
+        </div>
+        <div class="row g-2">
+            <div class="col-xl-3 col-lg-4 col-md-6">
+                <select name="uf" class="form-select" onchange="this.form.submit()">
+                    <option value="">UF (Todos)</option>
+                    @foreach(var uf in Model.UfsDisponiveis)
+                    {
+                        <option value="@uf" selected="@(Model.UF == uf)">@uf</option>
+                    }
+                </select>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6">
+                <select name="ordenarPor" class="form-select" aria-label="Ordenar" onchange="this.form.submit()">
+                    @if(Model.OrdenarPor == "cidade_desc") {
+                        <option value="cidade">Cidade A-Z</option>
+                        <option value="cidade_desc" selected>Cidade Z-A</option>
+                    } else {
+                        <option value="cidade" selected>Cidade A-Z</option>
+                        <option value="cidade_desc">Cidade Z-A</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="border-0 bg-transparent" id="container-enderecos">
+    @if(Model.Enderecos.Items.Any()){
+        <div id="view-list" class="card overflow-hidden view-mode">
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">CEP</th>
+                            <th>Logradouro</th>
+                            <th>Cidade/UF</th>
+                            <th>Número</th>
+                            <th class="text-end pe-4">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach(var e in Model.Enderecos.Items){
+                        <tr>
+                            <td class="ps-4 fw-medium">@e.CEP</td>
+                            <td>@e.Logradouro</td>
+                            <td><span class="badge bg-light text-dark border">@e.Cidade / @e.UF</span></td>
+                            <td>@e.Numero</td>
+                            <td class="text-end pe-4">
+                                <div class="d-flex justify-content-end gap-1">
+                                    <button class="btn-icon btn-ver-endereco" title="Visualizar" data-bs-toggle="tooltip" data-id="@e.Id">
+                                        <i data-lucide="eye"></i>
+                                    </button>
+                                    <button class="btn-icon btn-editar-endereco" title="Editar" data-bs-toggle="tooltip" data-id="@e.Id">
+                                        <i data-lucide="pencil"></i>
+                                    </button>
+                                    <form asp-action="Delete" asp-route-id="@e.Id" method="post" class="d-inline delete-form">
+                                        @Html.AntiForgeryToken()
+                                        <button type="button" class="btn-icon delete" title="Excluir">
+                                            <i data-lucide="trash-2"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="view-card" class="view-mode d-none">
+            <div class="row g-3">
+                @foreach(var e in Model.Enderecos.Items){
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card h-100 shadow-sm border-0 address-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title fw-bold mb-0">@e.CEP</h5>
+                                    <span class="badge bg-light text-dark border">@e.UF</span>
+                                </div>
+                                <p class="card-text text-muted mb-1 text-truncate" title="@e.Logradouro, @e.Numero">@e.Logradouro, @e.Numero</p>
+                                <p class="card-text text-muted mb-3"><i data-lucide="map-pin" style="width:14px;height:14px;" class="me-1"></i>@e.Cidade</p>
+                                <div class="d-flex justify-content-end gap-1 border-top pt-3">
+                                    <button class="btn btn-outline-secondary btn-sm btn-ver-endereco" title="Visualizar" data-id="@e.Id"><i data-lucide="eye" style="width:16px;height:16px;"></i></button>
+                                    <button class="btn btn-outline-primary btn-sm btn-editar-endereco" title="Editar" data-id="@e.Id"><i data-lucide="pencil" style="width:16px;height:16px;"></i></button>
+                                    <form asp-action="Delete" asp-route-id="@e.Id" method="post" class="d-inline delete-form">
+                                        @Html.AntiForgeryToken()
+                                        <button type="button" class="btn btn-outline-danger btn-sm delete" title="Excluir"><i data-lucide="trash-2" style="width:16px;height:16px;"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    } else {
+        <div class="card overflow-hidden">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i data-lucide="map-pinned" style="width:40px;height:40px;"></i>
+                </div>
+                <h3 class="empty-state-title">Nenhum endereço encontrado</h3>
+                <p class="empty-state-desc">Você ainda não cadastrou nenhum endereço ou a sua busca não retornou resultados.</p>
+                <button class="btn btn-primary px-4" type="button" data-bs-toggle="modal" data-bs-target="#modalNovoEndereco">
+                    <i data-lucide="plus"></i> Novo Endereço
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+@if(Model.Enderecos.TotalPages > 1)
+{
+    <div class="d-flex align-items-center justify-content-between mt-3 flex-wrap gap-2">
+        <p class="mb-0 text-muted small">
+            Mostrando <strong>@(((Model.Enderecos.Page - 1) * Model.Enderecos.PageSize) + 1)</strong>–<strong>@Math.Min(Model.Enderecos.Page * Model.Enderecos.PageSize, Model.Enderecos.Total)</strong> de <strong>@Model.Enderecos.Total</strong> endereços
+        </p>
+        <nav aria-label="Paginação">
+            <ul class="pagination pagination-sm mb-0 gap-1">
+                @* Anterior *@
+                <li class="page-item @(!Model.Enderecos.HasPrevious ? "disabled" : "")">
+                    <a class="page-link rounded-3" 
+                       href="?pagina=@(Model.Enderecos.Page - 1)&termo=@Model.Termo&ordenarPor=@Model.OrdenarPor&uf=@Model.UF&cidade=@Model.Cidade"
+                       aria-label="Página anterior">
+                        <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
+                    </a>
+                </li>
+
+                @* Números de página *@
+                @for(int i = 1; i <= Model.Enderecos.TotalPages; i++)
+                {
+                    @* Mostrar apenas páginas próximas à atual para não poluir *@
+                    @if(i == 1 || i == Model.Enderecos.TotalPages || (i >= Model.Enderecos.Page - 2 && i <= Model.Enderecos.Page + 2))
+                    {
+                        <li class="page-item @(i == Model.Enderecos.Page ? "active" : "")">
+                            <a class="page-link rounded-3" 
+                               href="?pagina=@i&termo=@Model.Termo&ordenarPor=@Model.OrdenarPor&uf=@Model.UF&cidade=@Model.Cidade">@i</a>
+                        </li>
+                    }
+                    else if(i == Model.Enderecos.Page - 3 || i == Model.Enderecos.Page + 3)
+                    {
+                        <li class="page-item disabled"><span class="page-link rounded-3">…</span></li>
+                    }
+                }
+
+                @* Próxima *@
+                <li class="page-item @(!Model.Enderecos.HasNext ? "disabled" : "")">
+                    <a class="page-link rounded-3" 
+                       href="?pagina=@(Model.Enderecos.Page + 1)&termo=@Model.Termo&ordenarPor=@Model.OrdenarPor&uf=@Model.UF&cidade=@Model.Cidade"
+                       aria-label="Próxima página">
+                        <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}
+
+@* ===== MODAL: NOVO ENDEREÇO ===== *@
+<div class="modal fade" id="modalNovoEndereco" tabindex="-1" aria-labelledby="modalNovoEnderecoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content modal-aec">
+            <div class="modal-header modal-aec-header">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="modal-header-icon"><i data-lucide="map-pin"></i></div>
+                    <div>
+                        <h5 class="modal-title mb-0" id="modalNovoEnderecoLabel">Novo Endereço</h5>
+                        <p class="modal-subtitle mb-0">Preencha os dados do endereço abaixo</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="form-novo-endereco" novalidate>
+                    @Html.AntiForgeryToken()
+                    <div id="modal-novo-validation" class="alert alert-danger d-none" role="alert">
+                        <div class="d-flex align-items-center gap-2">
+                            <i data-lucide="circle-x" style="width:18px;height:18px;flex-shrink:0;"></i>
+                            <span id="modal-novo-validation-text">Corrija os erros abaixo.</span>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold" for="n-CEP">CEP <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="text" id="n-CEP" name="CEP" class="form-control cep-mask-novo" placeholder="00000-000" maxlength="9" required>
+                                <button class="btn btn-outline-secondary" type="button" id="btn-buscar-cep-novo">
+                                    <i data-lucide="search" style="width:16px;height:16px;"></i>
+                                </button>
+                                <span id="cep-loading-novo" class="input-group-text d-none">
+                                    <span class="spinner-border spinner-border-sm text-primary"></span>
+                                </span>
+                            </div>
+                            <div class="invalid-feedback" id="nerr-CEP"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" for="n-Logradouro">Logradouro <span class="text-danger">*</span></label>
+                            <input type="text" id="n-Logradouro" name="Logradouro" class="form-control" placeholder="Rua, Avenida..." required>
+                            <div class="invalid-feedback" id="nerr-Logradouro"></div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold" for="n-Numero">Número <span class="text-danger">*</span></label>
+                            <input type="text" id="n-Numero" name="Numero" class="form-control" placeholder="100" required>
+                            <div class="invalid-feedback" id="nerr-Numero"></div>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold" for="n-Complemento">Complemento</label>
+                            <input type="text" id="n-Complemento" name="Complemento" class="form-control" placeholder="Apto, Bloco...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold" for="n-Bairro">Bairro</label>
+                            <input type="text" id="n-Bairro" name="Bairro" class="form-control" placeholder="Nome do bairro">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold" for="n-Cidade">Cidade <span class="text-danger">*</span></label>
+                            <input type="text" id="n-Cidade" name="Cidade" class="form-control" placeholder="Cidade" required>
+                            <div class="invalid-feedback" id="nerr-Cidade"></div>
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label fw-semibold" for="n-UF">UF <span class="text-danger">*</span></label>
+                            <input type="text" id="n-UF" name="UF" class="form-control text-uppercase" placeholder="SP" maxlength="2" required>
+                            <div class="invalid-feedback" id="nerr-UF"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer modal-aec-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i data-lucide="x"></i> Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-salvar-novo">
+                    <i data-lucide="save"></i>
+                    <span id="btn-salvar-novo-text">Salvar Endereço</span>
+                    <span id="btn-salvar-novo-spinner" class="spinner-border spinner-border-sm d-none ms-1"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ===== MODAL: VISUALIZAR ENDEREÇO ===== *@
+<div class="modal fade" id="modalVerEndereco" tabindex="-1" aria-labelledby="modalVerEnderecoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content modal-aec">
+            <div class="modal-header modal-aec-header">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="modal-header-icon"><i data-lucide="eye"></i></div>
+                    <div>
+                        <h5 class="modal-title mb-0" id="modalVerEnderecoLabel">Detalhes do Endereço</h5>
+                        <p class="modal-subtitle mb-0">Visualizando informações do endereço</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body p-4" id="modal-ver-body">
+                <div class="text-center py-4">
+                    <span class="spinner-border text-primary"></span>
+                </div>
+            </div>
+            <div class="modal-footer modal-aec-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i data-lucide="x"></i> Fechar
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-ver-para-editar">
+                    <i data-lucide="pencil"></i> Editar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ===== MODAL: EDITAR ENDEREÇO ===== *@
+<div class="modal fade" id="modalEditarEndereco" tabindex="-1" aria-labelledby="modalEditarEnderecoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content modal-aec">
+            <div class="modal-header modal-aec-header">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="modal-header-icon"><i data-lucide="pencil"></i></div>
+                    <div>
+                        <h5 class="modal-title mb-0" id="modalEditarEnderecoLabel">Editar Endereço</h5>
+                        <p class="modal-subtitle mb-0">Atualize os dados do endereço</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="form-editar-endereco" novalidate>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="e-Id" name="Id">
+                    <div id="modal-editar-validation" class="alert alert-danger d-none" role="alert">
+                        <div class="d-flex align-items-center gap-2">
+                            <i data-lucide="circle-x" style="width:18px;height:18px;flex-shrink:0;"></i>
+                            <span id="modal-editar-validation-text">Corrija os erros abaixo.</span>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold" for="e-CEP">CEP <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="text" id="e-CEP" name="CEP" class="form-control cep-mask-editar" placeholder="00000-000" maxlength="9" required>
+                                <button class="btn btn-outline-secondary" type="button" id="btn-buscar-cep-editar">
+                                    <i data-lucide="search" style="width:16px;height:16px;"></i>
+                                </button>
+                                <span id="cep-loading-editar" class="input-group-text d-none">
+                                    <span class="spinner-border spinner-border-sm text-primary"></span>
+                                </span>
+                            </div>
+                            <div class="invalid-feedback" id="eerr-CEP"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" for="e-Logradouro">Logradouro <span class="text-danger">*</span></label>
+                            <input type="text" id="e-Logradouro" name="Logradouro" class="form-control" placeholder="Rua, Avenida..." required>
+                            <div class="invalid-feedback" id="eerr-Logradouro"></div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold" for="e-Numero">Número <span class="text-danger">*</span></label>
+                            <input type="text" id="e-Numero" name="Numero" class="form-control" placeholder="100" required>
+                            <div class="invalid-feedback" id="eerr-Numero"></div>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold" for="e-Complemento">Complemento</label>
+                            <input type="text" id="e-Complemento" name="Complemento" class="form-control" placeholder="Apto, Bloco...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold" for="e-Bairro">Bairro</label>
+                            <input type="text" id="e-Bairro" name="Bairro" class="form-control" placeholder="Nome do bairro">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold" for="e-Cidade">Cidade <span class="text-danger">*</span></label>
+                            <input type="text" id="e-Cidade" name="Cidade" class="form-control" placeholder="Cidade" required>
+                            <div class="invalid-feedback" id="eerr-Cidade"></div>
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label fw-semibold" for="e-UF">UF <span class="text-danger">*</span></label>
+                            <input type="text" id="e-UF" name="UF" class="form-control text-uppercase" placeholder="SP" maxlength="2" required>
+                            <div class="invalid-feedback" id="eerr-UF"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer modal-aec-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i data-lucide="x"></i> Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-salvar-editar">
+                    <i data-lucide="save"></i>
+                    <span id="btn-salvar-editar-text">Salvar Alterações</span>
+                    <span id="btn-salvar-editar-spinner" class="spinner-border spinner-border-sm d-none ms-1"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // ── Tooltips ──────────────────────────────────────────────────────────
+    [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        .forEach(el => new bootstrap.Tooltip(el));
+
+    // ── Helpers ───────────────────────────────────────────────────────────
+    function setupCepMask(input, loadingId, btnId, fields) {
+        if (!input) return;
+        input.addEventListener('input', () => {
+            let v = input.value.replace(/\D/g, '').slice(0, 8);
+            input.value = v.length > 5 ? v.slice(0, 5) + '-' + v.slice(5) : v;
+        });
+        const buscar = async () => {
+            const clean = input.value.replace(/\D/g, '');
+            if (clean.length !== 8) return;
+            const load = document.getElementById(loadingId);
+            if (load) load.classList.remove('d-none');
+            try {
+                const resp = await fetch(`/Enderecos/BuscarCep?cep=${clean}`);
+                if (!resp.ok) { Swal.fire('CEP não encontrado', 'Verifique o CEP informado.', 'info'); return; }
+                const d = await resp.json();
+                if (fields.logradouro) document.getElementById(fields.logradouro).value = d.logradouro || '';
+                if (fields.complemento) document.getElementById(fields.complemento).value = d.complemento || '';
+                if (fields.bairro) document.getElementById(fields.bairro).value = d.bairro || '';
+                if (fields.cidade) document.getElementById(fields.cidade).value = d.localidade || '';
+                if (fields.uf) document.getElementById(fields.uf).value = d.uf || '';
+            } catch { Swal.fire('Falha na consulta', 'Não foi possível consultar o ViaCEP agora.', 'error'); }
+            finally { if (load) load.classList.add('d-none'); }
+        };
+        input.addEventListener('blur', buscar);
+        const btn = document.getElementById(btnId);
+        if (btn) btn.addEventListener('click', buscar);
+    }
+
+    function clearErrors(formEl, summaryId) {
+        document.getElementById(summaryId)?.classList.add('d-none');
+        formEl.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        formEl.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+    }
+
+    function showErrors(errors, prefix, summaryId, summaryTextId) {
+        let hasError = false;
+        for (const [field, msgs] of Object.entries(errors)) {
+            const input = document.getElementById(prefix + field);
+            if (input) input.classList.add('is-invalid');
+            const errEl = document.getElementById(prefix.replace('-','err-') + field);
+            if (errEl && msgs.length) errEl.textContent = msgs[0];
+            hasError = true;
+        }
+        if (hasError) {
+            document.getElementById(summaryId)?.classList.remove('d-none');
+            const txt = document.getElementById(summaryTextId);
+            if (txt) txt.textContent = 'Por favor, corrija os erros destacados.';
+        }
+    }
+
+    async function ajaxSave(url, data, btn, textEl, spinnerEl) {
+        btn.disabled = true;
+        const orig = textEl.textContent;
+        textEl.textContent = 'Salvando...';
+        spinnerEl.classList.remove('d-none');
+        try {
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+                body: data
+            });
+            return await resp.json();
+        } finally {
+            btn.disabled = false;
+            textEl.textContent = orig;
+            spinnerEl.classList.add('d-none');
+        }
+    }
+
+    function successAndReload(modalEl, message) {
+        bootstrap.Modal.getInstance(modalEl).hide();
+        Swal.fire({ icon: 'success', title: message, timer: 2000, showConfirmButton: false })
+            .then(() => window.location.reload());
+    }
+
+    // ── Re-render Lucide on any modal open ────────────────────────────────
+    document.querySelectorAll('.modal').forEach(m =>
+        m.addEventListener('shown.bs.modal', () => lucide.createIcons())
+    );
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // MODAL: NOVO ENDEREÇO
+    // ═══════════════════════════════════════════════════════════════════════
+    const modalNovo = document.getElementById('modalNovoEndereco');
+    const formNovo = document.getElementById('form-novo-endereco');
+
+    modalNovo.addEventListener('hidden.bs.modal', () => { formNovo.reset(); clearErrors(formNovo, 'modal-novo-validation'); lucide.createIcons(); });
+
+    setupCepMask(
+        document.querySelector('.cep-mask-novo'), 'cep-loading-novo', 'btn-buscar-cep-novo',
+        { logradouro: 'n-Logradouro', complemento: 'n-Complemento', bairro: 'n-Bairro', cidade: 'n-Cidade', uf: 'n-UF' }
+    );
+
+    document.getElementById('btn-salvar-novo').addEventListener('click', async () => {
+        clearErrors(formNovo, 'modal-novo-validation');
+        const token = formNovo.querySelector('input[name="__RequestVerificationToken"]').value;
+        const data = new URLSearchParams({
+            __RequestVerificationToken: token,
+            CEP: document.getElementById('n-CEP').value,
+            Logradouro: document.getElementById('n-Logradouro').value,
+            Numero: document.getElementById('n-Numero').value,
+            Complemento: document.getElementById('n-Complemento').value,
+            Bairro: document.getElementById('n-Bairro').value,
+            Cidade: document.getElementById('n-Cidade').value,
+            UF: document.getElementById('n-UF').value,
+        });
+        try {
+            const result = await ajaxSave('/Enderecos/Create', data,
+                document.getElementById('btn-salvar-novo'),
+                document.getElementById('btn-salvar-novo-text'),
+                document.getElementById('btn-salvar-novo-spinner'));
+            if (result.success) {
+                successAndReload(modalNovo, 'Endereço cadastrado!');
+            } else {
+                showErrors(result.errors || {}, 'n-', 'modal-novo-validation', 'modal-novo-validation-text');
+            }
+        } catch { Swal.fire('Erro', 'Não foi possível salvar. Tente novamente.', 'error'); }
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // MODAL: VISUALIZAR ENDEREÇO
+    // ═══════════════════════════════════════════════════════════════════════
+    const modalVer = document.getElementById('modalVerEndereco');
+    let currentViewId = null;
+
+    document.querySelectorAll('.btn-ver-endereco').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            currentViewId = btn.dataset.id;
+            const body = document.getElementById('modal-ver-body');
+            body.innerHTML = '<div class="text-center py-4"><span class="spinner-border text-primary"></span></div>';
+            new bootstrap.Modal(modalVer).show();
+            try {
+                const resp = await fetch(`/Enderecos/GetJson?id=${currentViewId}`);
+                if (!resp.ok) throw new Error();
+                const e = await resp.json();
+                body.innerHTML = `
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <p class="text-muted fw-semibold mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">CEP</p>
+                        <p class="fw-bold fs-5 mb-0">${e.cep || '—'}</p>
+                    </div>
+                    <div class="col-md-5">
+                        <p class="text-muted fw-semibold mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">Logradouro</p>
+                        <p class="fw-medium mb-0">${e.logradouro || '—'}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="text-muted fw-semibold mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">Número</p>
+                        <p class="fw-medium mb-0">${e.numero || '—'}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="text-muted fw-semibold mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">Complemento</p>
+                        <p class="fw-medium mb-0">${e.complemento || '—'}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="text-muted fw-semibold mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">Bairro</p>
+                        <p class="fw-medium mb-0">${e.bairro || '—'}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="text-muted fw-semibold mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px">Cidade / UF</p>
+                        <span class="badge fs-6 fw-semibold" style="background:rgba(98,212,234,.15);color:#1A6AAD;">${e.cidade || '—'} / ${e.uf || '—'}</span>
+                    </div>
+                </div>`;
+            } catch {
+                body.innerHTML = '<p class="text-danger text-center">Não foi possível carregar os dados.</p>';
+            }
+        });
+    });
+
+    // Botão "Editar" dentro do modal de visualização
+    document.getElementById('btn-ver-para-editar').addEventListener('click', () => {
+        bootstrap.Modal.getInstance(modalVer).hide();
+        setTimeout(() => abrirModalEditar(currentViewId), 400);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // MODAL: EDITAR ENDEREÇO
+    // ═══════════════════════════════════════════════════════════════════════
+    const modalEditar = document.getElementById('modalEditarEndereco');
+    const formEditar = document.getElementById('form-editar-endereco');
+
+    modalEditar.addEventListener('hidden.bs.modal', () => { formEditar.reset(); clearErrors(formEditar, 'modal-editar-validation'); lucide.createIcons(); });
+
+    setupCepMask(
+        document.querySelector('.cep-mask-editar'), 'cep-loading-editar', 'btn-buscar-cep-editar',
+        { logradouro: 'e-Logradouro', complemento: 'e-Complemento', bairro: 'e-Bairro', cidade: 'e-Cidade', uf: 'e-UF' }
+    );
+
+    async function abrirModalEditar(id) {
+        document.getElementById('e-Id').value = id;
+        try {
+            const resp = await fetch(`/Enderecos/GetJson?id=${id}`);
+            if (!resp.ok) throw new Error();
+            const e = await resp.json();
+            document.getElementById('e-CEP').value = e.cep || '';
+            document.getElementById('e-Logradouro').value = e.logradouro || '';
+            document.getElementById('e-Numero').value = e.numero || '';
+            document.getElementById('e-Complemento').value = e.complemento || '';
+            document.getElementById('e-Bairro').value = e.bairro || '';
+            document.getElementById('e-Cidade').value = e.cidade || '';
+            document.getElementById('e-UF').value = e.uf || '';
+        } catch { Swal.fire('Erro', 'Não foi possível carregar os dados.', 'error'); return; }
+        new bootstrap.Modal(modalEditar).show();
+    }
+
+    document.querySelectorAll('.btn-editar-endereco').forEach(btn => {
+        btn.addEventListener('click', () => abrirModalEditar(btn.dataset.id));
+    });
+
+    document.getElementById('btn-salvar-editar').addEventListener('click', async () => {
+        clearErrors(formEditar, 'modal-editar-validation');
+        const id = document.getElementById('e-Id').value;
+        const token = formEditar.querySelector('input[name="__RequestVerificationToken"]').value;
+        const data = new URLSearchParams({
+            __RequestVerificationToken: token,
+            Id: id,
+            CEP: document.getElementById('e-CEP').value,
+            Logradouro: document.getElementById('e-Logradouro').value,
+            Numero: document.getElementById('e-Numero').value,
+            Complemento: document.getElementById('e-Complemento').value,
+            Bairro: document.getElementById('e-Bairro').value,
+            Cidade: document.getElementById('e-Cidade').value,
+            UF: document.getElementById('e-UF').value,
+        });
+        try {
+            const result = await ajaxSave(`/Enderecos/Edit/${id}`, data,
+                document.getElementById('btn-salvar-editar'),
+                document.getElementById('btn-salvar-editar-text'),
+                document.getElementById('btn-salvar-editar-spinner'));
+            if (result.success) {
+                successAndReload(modalEditar, 'Endereço atualizado!');
+            } else {
+                showErrors(result.errors || {}, 'e-', 'modal-editar-validation', 'modal-editar-validation-text');
+            }
+        } catch { Swal.fire('Erro', 'Não foi possível salvar. Tente novamente.', 'error'); }
+    });
+
+    // ── Delete confirm ────────────────────────────────────────────────────
+    document.querySelectorAll('.delete-form').forEach(form => {
+        const btn = form.querySelector('button.delete');
+        btn.addEventListener('click', e => {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Excluir endereço?',
+                text: 'Esta ação não poderá ser desfeita.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '<i class="swal-icon-btn"></i> Sim, excluir',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                reverseButtons: true,
+                focusCancel: true,
+                customClass: {
+                    popup: 'swal-aec-popup',
+                    title: 'swal-aec-title',
+                }
+            }).then(result => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+
+// ── View Mode Toggle ────────────────────────────────────────────────────
+function setViewMode(mode) {
+    const listBtn = document.getElementById('btn-view-list');
+    const cardBtn = document.getElementById('btn-view-card');
+    const listView = document.getElementById('view-list');
+    const cardView = document.getElementById('view-card');
+
+    if (!listBtn || !cardBtn || !listView || !cardView) return;
+
+    // Reset animation
+    listView.classList.remove('view-mode-enter');
+    cardView.classList.remove('view-mode-enter');
+    // Force DOM reflow to restart animation
+    void listView.offsetWidth;
+    void cardView.offsetWidth;
+
+    if (mode === 'card') {
+        listBtn.classList.remove('active');
+        cardBtn.classList.add('active');
+        listView.classList.add('d-none');
+        cardView.classList.remove('d-none');
+        cardView.classList.add('view-mode-enter');
+    } else {
+        cardBtn.classList.remove('active');
+        listBtn.classList.add('active');
+        cardView.classList.add('d-none');
+        listView.classList.remove('d-none');
+        listView.classList.add('view-mode-enter');
+    }
+    localStorage.setItem('aec_address_view_mode', mode);
+}
+
+// Initialize view mode on load
+(function() {
+    const savedMode = localStorage.getItem('aec_address_view_mode') || 'list';
+    document.addEventListener('DOMContentLoaded', () => {
+        setViewMode(savedMode);
+        
+        // Setup Search Debounce
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            // Restore focus to end of text after reload
+            if (searchInput.value) {
+                searchInput.focus();
+                const len = searchInput.value.length;
+                searchInput.setSelectionRange(len, len);
+            }
+            
+            let debounceTimer;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    this.form.submit();
+                }, 500);
+            });
+        }
+    });
+})();
+</script>
+}

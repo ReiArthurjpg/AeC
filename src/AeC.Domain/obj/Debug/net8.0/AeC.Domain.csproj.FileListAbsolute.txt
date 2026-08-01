@@ -1,0 +1,12 @@
+C:\git\AeC\src\AeC.Domain\bin\Debug\net8.0\AeC.Domain.deps.json
+C:\git\AeC\src\AeC.Domain\bin\Debug\net8.0\AeC.Domain.dll
+C:\git\AeC\src\AeC.Domain\bin\Debug\net8.0\AeC.Domain.pdb
+C:\git\AeC\src\AeC.Domain\obj\Debug\net8.0\AeC.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\git\AeC\src\AeC.Domain\obj\Debug\net8.0\AeC.Domain.AssemblyInfoInputs.cache
+C:\git\AeC\src\AeC.Domain\obj\Debug\net8.0\AeC.Domain.AssemblyInfo.cs
+C:\git\AeC\src\AeC.Domain\obj\Debug\net8.0\AeC.Domain.csproj.CoreCompileInputs.cache
+C:\git\AeC\src\AeC.Domain\obj\Debug\net8.0\AeC.Domain.sourcelink.json
+C:\git\AeC\src\AeC.Domain\obj\Debug\net8.0\AeC.Domain.dll
+C:\git\AeC\src\AeC.Domain\obj\Debug\net8.0\refint\AeC.Domain.dll
+C:\git\AeC\src\AeC.Domain\obj\Debug\net8.0\AeC.Domain.pdb
+C:\git\AeC\src\AeC.Domain\obj\Debug\net8.0\ref\AeC.Domain.dll
