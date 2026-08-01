@@ -39,3 +39,9 @@ CREATE INDEX [IX_Enderecos_UsuarioId] ON [Enderecos] ([UsuarioId]);
 GO
 CREATE UNIQUE INDEX [IX_Usuarios_Usuario] ON [Usuarios] ([Usuario]);
 GO
+
+
+-- Criação do usuário padrão: admin / Admin@123
+INSERT INTO [Usuarios] ([Nome], [Usuario], [Senha]) VALUES ('Administrador Padrão', 'admin', 'Admin@123');
+GO
+
