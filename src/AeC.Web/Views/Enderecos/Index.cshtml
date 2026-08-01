@@ -171,6 +171,53 @@
     }
 </div>
 
+@if(Model.Enderecos.TotalPages > 1)
+{
+    <div class="d-flex align-items-center justify-content-between mt-3 flex-wrap gap-2">
+        <p class="mb-0 text-muted small">
+            Mostrando <strong>@(((Model.Enderecos.Page - 1) * Model.Enderecos.PageSize) + 1)</strong>–<strong>@Math.Min(Model.Enderecos.Page * Model.Enderecos.PageSize, Model.Enderecos.Total)</strong> de <strong>@Model.Enderecos.Total</strong> endereços
+        </p>
+        <nav aria-label="Paginação">
+            <ul class="pagination pagination-sm mb-0 gap-1">
+                @* Anterior *@
+                <li class="page-item @(!Model.Enderecos.HasPrevious ? "disabled" : "")">
+                    <a class="page-link rounded-3" 
+                       href="?pagina=@(Model.Enderecos.Page - 1)&termo=@Model.Termo&ordenarPor=@Model.OrdenarPor&uf=@Model.UF&cidade=@Model.Cidade"
+                       aria-label="Página anterior">
+                        <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
+                    </a>
+                </li>
+
+                @* Números de página *@
+                @for(int i = 1; i <= Model.Enderecos.TotalPages; i++)
+                {
+                    @* Mostrar apenas páginas próximas à atual para não poluir *@
+                    @if(i == 1 || i == Model.Enderecos.TotalPages || (i >= Model.Enderecos.Page - 2 && i <= Model.Enderecos.Page + 2))
+                    {
+                        <li class="page-item @(i == Model.Enderecos.Page ? "active" : "")">
+                            <a class="page-link rounded-3" 
+                               href="?pagina=@i&termo=@Model.Termo&ordenarPor=@Model.OrdenarPor&uf=@Model.UF&cidade=@Model.Cidade">@i</a>
+                        </li>
+                    }
+                    else if(i == Model.Enderecos.Page - 3 || i == Model.Enderecos.Page + 3)
+                    {
+                        <li class="page-item disabled"><span class="page-link rounded-3">…</span></li>
+                    }
+                }
+
+                @* Próxima *@
+                <li class="page-item @(!Model.Enderecos.HasNext ? "disabled" : "")">
+                    <a class="page-link rounded-3" 
+                       href="?pagina=@(Model.Enderecos.Page + 1)&termo=@Model.Termo&ordenarPor=@Model.OrdenarPor&uf=@Model.UF&cidade=@Model.Cidade"
+                       aria-label="Próxima página">
+                        <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}
+
 @* ===== MODAL: NOVO ENDEREÇO ===== *@
 <div class="modal fade" id="modalNovoEndereco" tabindex="-1" aria-labelledby="modalNovoEnderecoLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">

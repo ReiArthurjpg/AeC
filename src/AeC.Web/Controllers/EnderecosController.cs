@@ -4,7 +4,7 @@ namespace AeC.Web.Controllers;
 { int UsuarioId=>int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     public async Task<IActionResult> Index(string? termo, string? ordenarPor, string? uf, string? cidade, int pagina = 1)
     {
-        var data = await service.ListarAsync(UsuarioId, new(termo, ordenarPor, uf, cidade, pagina, 10));
+        var data = await service.ListarAsync(UsuarioId, new(termo, ordenarPor, uf, cidade, pagina, 9));
         var todos = await service.ListarTodosAsync(UsuarioId);
         int totalCidades = todos.Select(x => x.Cidade).Distinct(StringComparer.OrdinalIgnoreCase).Count();
         var ufsDisponiveis = todos.Select(x => x.UF).Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(x => x).ToList();
