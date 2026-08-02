@@ -1,148 +1,70 @@
-# AeC Endereços
+# AeC Endereços - Teste Técnico
 
+**Objetivo do Teste:**
+Desenvolver uma aplicação web em C# que permita ao usuário:
+- Realizar login;
+- Gerenciar um CRUD de endereços;
+- Inserir endereço manualmente;
+- Informar um CEP para buscar os dados automaticamente através da API ViaCEP;
+- Exportar os endereços para CSV.
 
+*As seções abaixo explicam como a solução foi implementada e como testá-la.*
 
+---
 
+Bem-vindo ao **AeC Endereços**! 
 
+Este é um sistema web desenvolvido para facilitar e centralizar o gerenciamento de endereços. Através de uma interface amigável, você pode manter todos os seus endereços organizados e seguros num só lugar. 
 
-Aplicação Web ASP.NET Core MVC para gerenciamento seguro de endereços por usuário, com autenticação por cookie, CRUD completo, integração ViaCEP e exportação CSV.
+O sistema foi pensado para ser prático e intuitivo, garantindo que qualquer pessoa consiga utilizá-lo sem complicações.
 
-## Tecnologias
+## O que o sistema entrega para você?
 
-- ASP.NET Core MVC 8
-- C# / .NET 8
-- Entity Framework Core
-- SQL Server
-- Cookie Authentication
-- BCrypt.Net-Next
-- Bootstrap 5
-- Bootstrap Icons
-- SweetAlert2
-- xUnit e Moq
+- **Acesso Seguro:** Você possui uma tela de login para garantir que apenas pessoas autorizadas (com usuário e senha) tenham acesso aos dados.
+- **Busca de CEP Automática:** Chega de digitar a rua, bairro e cidade manualmente! Ao inserir um CEP, o sistema consulta a base do ViaCEP e preenche tudo para você em um piscar de olhos.
+- **Gestão Completa (Tudo em Tela Única):** Você pode criar novos endereços, visualizar os detalhes de cada um, editar informações, e excluir endereços obsoletos. Tudo isso é feito em uma única tela, usando janelas que se abrem por cima da página (modais), tornando a navegação muito mais rápida e sem recarregar o site a todo momento!
+- **Transparência (Auditoria):** No modal de detalhes do endereço, você consegue ver de forma clara **quem** criou aquele endereço e **quem** foi a última pessoa a atualizá-lo. *(Atenção: todos os usuários cadastrados podem ver a mesma lista de endereços do sistema).*
+- **Exportação de Dados:** Precisa dos dados para um relatório ou planilha? Com apenas um clique no botão "Exportar CSV", você baixa todos os endereços cadastrados diretamente para o seu computador.
+- **Aparência Moderna:** Um design claro, limpo e responsivo (funciona muito bem tanto no computador quanto no celular), com alertas amigáveis que confirmam quando um endereço é salvo ou deletado.
 
-## Arquitetura
+---
 
-A solução segue arquitetura em camadas inspirada em Clean Architecture:
+## Como rodar o sistema no seu computador
 
-```text
-src/
-├── AeC.Web            # MVC, Controllers, Views, ViewModels, filtros e arquivos estáticos
-├── AeC.Application    # DTOs, contratos e serviços de aplicação
-├── AeC.Domain         # Entidades, interfaces de repositório e exceções de domínio
-├── AeC.Infrastructure # EF Core, DbContext, configurations, repositories, ViaCEP, BCrypt e scripts SQL
-└── AeC.Shared         # Tipos e extensões compartilhadas
-tests/
-└── AeC.Tests          # Testes unitários
-```
+Nós preparamos duas formas simples de iniciar e usar o sistema. Escolha a que for mais conveniente para você!
 
-## Funcionalidades
+### 💡 Opção 1: Usando o Docker (Recomendado - Mais rápido e fácil)
+Se você tem o Docker instalado, esta é a opção ideal. O Docker baixa as ferramentas, liga o banco de dados e inicia o sistema, tudo com apenas um comando.
 
-- Login real com ASP.NET Cookie Authentication.
-- Senhas armazenadas com BCrypt.
-- CRUD de endereços.
-- Usuário visualiza apenas seus próprios endereços.
-- Busca automática de CEP com ViaCEP.
-- Exportação CSV por usuário logado.
-- Paginação, pesquisa por CEP/cidade e ordenação por cidade.
-- Interface responsiva com Bootstrap 5.
-- Confirmação de exclusão com SweetAlert2.
-- Exception filter global para evitar exposição de erros internos.
+**Passo a passo:**
+1. Abra o terminal (prompt de comando ou PowerShell) na pasta raiz do projeto.
+2. Digite o seguinte comando e aperte Enter:
+   ```bash
+   docker-compose up --build -d
+   ```
+3. Aguarde alguns segundos. O Docker fará todo o trabalho pesado de criar o Banco de Dados, tabelas e rodar o Sistema Web.
+4. Abra o seu navegador de internet e acesse: 👉 **http://localhost:5000**
+5. **Faça o login** utilizando as credenciais padrão do sistema:
+   - **Usuário:** `admin`
+   - **Senha:** `Admin@123`
+6. *Para desligar o sistema depois de usar:* Basta rodar `docker-compose down` no mesmo terminal.
 
-## Banco de Dados
+### 🛠 Opção 2: Rodando Manualmente (Sem o Docker)
+Se você é desenvolvedor, prefere rodar manualmente e já tem o **.NET 8** e o **SQL Server** instalados, siga os passos abaixo:
 
-Banco alvo: SQL Server.
+**Passo a passo:**
+1. Se necessário, abra o arquivo `appsettings.json` (localizado em `src/AeC.Web`) e certifique-se de que a configuração `DefaultConnection` está apontando para o seu banco SQL Server local.
+2. Abra o terminal na pasta raiz do projeto.
+3. Para iniciar a aplicação, digite:
+   ```bash
+   dotnet run --project src/AeC.Web
+   ```
+4. A própria aplicação será inteligente o suficiente para criar o banco de dados, as tabelas e o usuário administrador caso ainda não existam.
+5. Abra o seu navegador de internet e acesse a URL que aparecerá no console (normalmente 👉 **http://localhost:5002** ou **http://localhost:5000**).
+6. **Faça o login** utilizando as credenciais padrão:
+   - **Usuário:** `admin`
+   - **Senha:** `Admin@123`
 
-Tabelas solicitadas:
+---
 
-### Usuarios
-
-- Id
-- Nome
-- Usuario
-- Senha
-
-### Enderecos
-
-- Id
-- CEP
-- Logradouro
-- Complemento
-- Bairro
-- Cidade
-- UF
-- Numero
-- UsuarioId
-
-Scripts disponíveis em:
-
-```text
-src/AeC.Infrastructure/Scripts/001_create_tables.sql
-src/AeC.Infrastructure/Scripts/002_seed_admin_user.sql
-```
-
-## Como executar
-
-1. Configure a connection string em `src/AeC.Web/appsettings.json`.
-2. Garanta que o SQL Server esteja acessível.
-3. Restaure pacotes, aplique migrations e execute:
-
-```bash
-dotnet restore
-dotnet ef database update --project src/AeC.Infrastructure --startup-project src/AeC.Web
-dotnet run --project src/AeC.Web
-```
-
-> O `Program.cs` também chama `MigrateAsync` e executa o seed inicial quando a aplicação inicia.
-
-## Usuário padrão
-
-```text
-Usuário: admin
-Senha: Admin@123
-```
-
-Em produção, altere a senha padrão e prefira secrets/variáveis de ambiente.
-
-## Fluxo do sistema
-
-1. Usuário acessa a aplicação.
-2. Caso não autenticado, é redirecionado para login.
-3. Após autenticação, é direcionado ao dashboard de endereços.
-4. Pode cadastrar, editar, detalhar, excluir, pesquisar e exportar endereços.
-5. Ao informar CEP, a aplicação consulta ViaCEP e preenche os campos de endereço.
-
-## Segurança
-
-- Cookie authentication real.
-- BCrypt para senha.
-- AntiForgeryToken nos formulários.
-- Validação server-side com DataAnnotations e ModelState.
-- Sanitização básica em campos textuais.
-- Filtro global de exceções.
-- Restrições por `UsuarioId` nos serviços e repositórios.
-- Não exposição de stack trace para usuário final.
-
-## Testes
-
-Execute:
-
-```bash
-dotnet test
-```
-
-Coberturas iniciais:
-
-- `AuthService`
-- `EnderecoService`
-- `CsvExportService`
-
-## Melhorias futuras
-
-- Refresh tokens se houver API pública.
-- Auditoria de alterações em endereços.
-- Rate limit na consulta ViaCEP.
-- Health checks.
-- Docker Compose com SQL Server.
-- Pipeline CI/CD.
-- Observabilidade com OpenTelemetry.
-- Políticas avançadas de senha.
+*Aproveite a facilidade e a agilidade na gestão dos seus endereços com o AeC Endereços!*
