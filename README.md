@@ -31,7 +31,7 @@ O sistema foi pensado para ser prático e intuitivo, garantindo que qualquer pes
 
 ## Como rodar o sistema no seu computador
 
-Nós preparamos duas formas simples de iniciar e usar o sistema. Escolha a que for mais conveniente para você!
+Preparei duas formas simples de iniciar e usar o sistema. Escolha a que for mais conveniente para você!
 
 ### 💡 Opção 1: Usando o Docker (Recomendado - Mais rápido e fácil)
 Se você tem o Docker instalado, esta é a opção ideal. O Docker baixa as ferramentas, liga o banco de dados e inicia o sistema, tudo com apenas um comando.
